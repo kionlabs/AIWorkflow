@@ -833,9 +833,36 @@ export default function App() {
   }
 
   return (
-    <div className="min-h-screen bg-[#F8F7FA] text-[#1E1B26] flex overflow-hidden font-sans antialiased selection:bg-indigo-600 selection:text-white">
+    <div className="min-h-screen bg-[#F8F7FA] text-[#1E1B26] flex overflow-hidden font-sans antialiased selection:bg-indigo-600 selection:text-white relative">
       
-      {/* 1. LEFT SIDEBAR (Navigation Sidebar) */}
+      {/* Rate Limit Cooldown Overlay */}
+      {cooldownTime > 0 && (
+        <div className="fixed inset-0 z-[100] bg-[#120F1A]/80 backdrop-blur-md flex items-center justify-center p-4 animate-in fade-in duration-300">
+          <div className="bg-white rounded-[32px] p-8 max-w-sm w-full text-center shadow-2xl border border-indigo-100 space-y-6 transform animate-in zoom-in-95 duration-300">
+            <div className="relative w-20 h-20 mx-auto">
+              <div className="absolute inset-0 bg-indigo-100 rounded-full animate-ping opacity-20" />
+              <div className="relative bg-indigo-50 w-20 h-20 rounded-full flex items-center justify-center">
+                <RefreshCw className="w-10 h-10 text-indigo-600 animate-spin" style={{ animationDuration: '3s' }} />
+              </div>
+            </div>
+            <div className="space-y-2">
+              <h3 className="text-xl font-black text-slate-800">AI가 잠시 휴식 중입니다</h3>
+              <p className="text-sm text-slate-500 leading-relaxed">
+                안정적인 서비스를 위해 AI 모델의 호출 횟수를 조절하고 있습니다. <br/>
+                <span className="text-indigo-600 font-bold">{cooldownTime}초</span> 뒤에 다시 시도할 수 있습니다.
+              </p>
+            </div>
+            <div className="pt-2">
+              <div className="w-full bg-slate-100 h-1.5 rounded-full overflow-hidden">
+                <div 
+                  className="bg-indigo-600 h-full transition-all duration-1000 ease-linear" 
+                  style={{ width: `${(cooldownTime / 30) * 100}%` }}
+                />
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
       <aside id="left-sidebar" className={`w-64 bg-white border-r border-[#ECEAF0] flex flex-col shrink-0 transition-all duration-300 z-20 ${focusMode ? "hidden" : "hidden md:flex"}`}>
         
         {/* LOGO AREA */}
@@ -1738,7 +1765,7 @@ export default function App() {
                                 </div>
                               </div>
                               <button
-                                onClick={() => handleGenerateCode(appSpec)}
+                                onClick={() => handleGenerateCode(appSpec, true)}
                                 className="w-full sm:w-auto bg-[#633BCA] hover:bg-[#522EB4] text-white text-[11px] font-black py-2 px-4 rounded-xl shadow-md flex items-center justify-center gap-1.5 transition shrink-0 animate-bounce"
                               >
                                 <span>⚡ 코드 반영하기</span>
@@ -1769,13 +1796,24 @@ export default function App() {
                                 Netlify Deploy
                               </button>
                             </div>
-                            <button
-                              onClick={handleDownloadZIP}
-                              className="flex items-center gap-1.5 bg-white border border-[#ECEAF0] px-2.5 py-1.5 rounded-lg text-[10px] font-bold text-slate-600 hover:bg-[#FAF9FC] transition"
-                            >
-                              <Download className="w-3 h-3" />
-                              <span>Download ZIP</span>
-                            </button>
+                            <div className="flex gap-1.5">
+                              <button
+                                onClick={() => handleGenerateCode(appSpec, true)}
+                                disabled={isDeveloping}
+                                className="flex items-center gap-1 bg-amber-50 border border-amber-100 px-2 py-1.5 rounded-lg text-[10px] font-bold text-amber-600 hover:bg-amber-100 transition disabled:opacity-50"
+                                title="코드를 처음부터 다시 빌드합니다."
+                              >
+                                <RefreshCw className={`w-3 h-3 ${isDeveloping ? 'animate-spin' : ''}`} />
+                                <span>코드 재생성</span>
+                              </button>
+                              <button
+                                onClick={handleDownloadZIP}
+                                className="flex items-center gap-1.5 bg-white border border-[#ECEAF0] px-2.5 py-1.5 rounded-lg text-[10px] font-bold text-slate-600 hover:bg-[#FAF9FC] transition"
+                              >
+                                <Download className="w-3 h-3" />
+                                <span>Download ZIP</span>
+                              </button>
+                            </div>
                           </div>
 
                           {/* Tab 1: Live preview iframe */}
