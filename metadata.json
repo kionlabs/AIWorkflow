@@ -1,0 +1,6 @@
+{
+  "name": "AI Workflow Dashboard",
+  "description": "학생들이 기획 에이전트와 개발 에이전트를 사용하여 프로젝트를 정밀 기획하고 Netlify로 즉시 배포 및 실시간 테스트할 수 있는 AI 워크플로우 대시보드",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
