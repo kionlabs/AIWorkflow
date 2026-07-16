@@ -148,6 +148,73 @@ const IDEA_TEMPLATES = [
   }
 ];
 
+// Local Fallback Planner Logic for Offline/Static Mode
+const getLocalFallbackPlan = (idea: string): any => {
+  const ideaLower = idea.toLowerCase();
+  let appName = "KION 스마트 학업 플래너 📖";
+  let description = "학생들의 하루 일정과 교과 공부, 건강 습관을 한눈에 설계하는 맞춤형 성장 앱";
+  let keyFeatures = [
+    { title: "🎯 목표 스택 달성 게이지", description: "일일 목표를 세우고 달성율을 실시간 체크하여 성장 경험치 적립" },
+    { title: "⏱️ 고밀도 집중 뽀모도로", description: "25분 집중과 5분 카밍 휴식으로 뇌를 보호하며 학습 밀도를 상승시키는 시각 타이머" },
+    { title: "📝 마음 챙김 3줄 감사 일지", description: "하루의 소소한 가치를 편안하게 작성하여 긍정 호르몬을 높이는 마인드 루틴" }
+  ];
+
+  if (ideaLower.includes("수분") || ideaLower.includes("물") || ideaLower.includes("water") || ideaLower.includes("hydrate")) {
+    appName = "수분 충전 챌린지 🥤";
+    description = "목표 수분 섭취와 귀여운 물방울 캐릭터 진화를 결합한 상큼한 습관 빌더";
+    keyFeatures = [
+      { title: "💧 스마트 수분 수위 기록", description: "터치 한 번으로 마신 물의 용량을 컵/텀블러별로 맞춤형 누적 기입" },
+      { title: "🌱 물방울 성장 시뮬레이터", description: "섭취율이 늘어남에 따라 아기자기하게 성장하고 진화하는 물방울 캐릭터" },
+      { title: "📊 실시간 음용수 히스토리", description: "오늘 마신 시점별 기록을 타임라인 로그로 저장하고 필요시 초기화" }
+    ];
+  } else if (ideaLower.includes("영어") || ideaLower.includes("단어") || ideaLower.includes("voca") || ideaLower.includes("퀴즈") || ideaLower.includes("quiz")) {
+    appName = "중등 영단어 스피드 퀴즈 🧠";
+    description = "제한 시간 10초 내 핵심 뜻을 맞추는 박진감 넘치는 영단어 타임어택 퀴즈";
+    keyFeatures = [
+      { title: "⚡ 10초 타임어택 서바이벌", description: "실시간 게이지 바가 감소하여 정밀하게 집중시키는 사지선다 문제은행" },
+      { title: "🔥 콤보 폭발 스파크 보너스", description: "연속 정답 성공 시 점수가 가산되어 게임처럼 몰입시키는 콤보 누적" },
+      { title: "📓 스마트 오답 복습 노트", description: "틀린 영어 단어를 자동으로 수집하여 언제든 재학습하도록 돕는 스마트 백업" }
+    ];
+  } else if (ideaLower.includes("일기") || ideaLower.includes("감사") || ideaLower.includes("기분") || ideaLower.includes("diary") || ideaLower.includes("journal")) {
+    appName = "3줄 감사 일기 & 기분 기록 ✍️";
+    description = "오늘의 감정 이모티콘과 하루 단 3줄의 감사문 기입을 연동한 웰니스 저널";
+    keyFeatures = [
+      { title: "😊 5가지 기분 감정 초이스", description: "오늘 나의 정신적 컨디션을 상큼한 얼굴 이모지로 간단 체크" },
+      { title: "✍️ 딱 3줄 긍정 감사 작성", description: "줄글 일기의 피로 없이 매일 소소한 감사함 3가지만 기입하는 폼" },
+      { title: "📅 감정 캘린더 일지 보관함", description: "날짜와 기분 수치가 그라데이션 카드로 누적되는 영속 히스토리" }
+    ];
+  } else if (ideaLower.includes("타이머") || ideaLower.includes("뽀모도로") || ideaLower.includes("공부") || ideaLower.includes("study") || ideaLower.includes("timer")) {
+    appName = "집중 뽀모도로 타이머 ⏱️";
+    description = "원형 프로그레스 테두리와 사운드로 집중의 효율을 일깨우는 뽀모도로 학습기";
+    keyFeatures = [
+      { title: "🍅 원형 프로그레스 몰입 시계", description: "남은 몰입 시간을 부드러운 서클 게이지로 도출해주는 타이머" },
+      { title: "📝 집중 과제 ToDo 연동", description: "타이머 아래 할 일을 작성해두고 완주 후 체크 처리하는 편리한 일지" },
+      { title: "📊 오늘 하루 몰입 적립 스택", description: "성공적으로 완수한 세션 개수가 누적되며 공부 의욕을 자극" }
+    ];
+  } else if (ideaLower.includes("계산기") || ideaLower.includes("calc")) {
+    appName = "수학 발전소: 스마트 에듀 계산기 🧮";
+    description = "연산 수식 이력 백업 기능과 실시간 물리 단위 환산기를 갖춘 종합 수학 허브";
+    keyFeatures = [
+      { title: "➕ 수식 히스토리 계산 패널", description: "사칙연산 결과를 백업하고 원클릭으로 다시 계산창에 올리는 엔진" },
+      { title: "📐 편리한 실시간 단위 변환", description: "길이, 무게, 온도의 공학 수치들을 즉시 호환 변환해주는 간이 위젯" },
+      { title: "💾 공식 메모리 즐겨찾기", description: "중요 연산식이나 과제용 수식 결과를 이름과 함께 기록 보존" }
+    ];
+  }
+
+  return {
+    appName,
+    description,
+    targetAudience: "자기 계발과 성장을 꿈꾸는 모든 학생 및 일반인",
+    keyFeatures,
+    uiLayout: "청량하고 깨끗한 화이트 톤에 포인트 컬러(인디고 블루)를 활용한 미니멀 디자인. 하단 네비게이션 바를 통한 직관적인 메뉴 이동.",
+    techSpecs: "모든 데이터는 브라우저 로컬스토리지(localStorage)에 안전하게 보관되며, 별도의 서버 저장 없이 즉각적인 반응성을 보장함.",
+    systemPrompt: `너는 사용자의 학업과 건강을 돕는 '마음 따뜻한 AI 개발자'이다. 
+사용자가 입력한 아이디어("${idea}")를 바탕으로, HTML/JS/Tailwind CSS를 활용한 싱글 페이지 앱을 만들어야 해.
+반드시 Lucide 아이콘을 활용하고, 데이터 저장은 localStorage를 사용하여 새로고침해도 유지되게 만들어줘.`,
+    isFallback: true
+  };
+};
+
 export default function App() {
   // Navigation Menu state
   const [currentMenu, setCurrentMenu] = useState<"dashboard" | "builder" | "settings">("dashboard");
@@ -464,22 +531,35 @@ export default function App() {
     await new Promise(resolve => setTimeout(resolve, 1500));
     
     try {
-      const response = await fetch("/api/gemini/plan", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ idea })
-      });
-      
-      if (response.status === 429) {
-        setCooldownTime(30);
-        throw new Error("AI가 지금 너무 바빠요! 잠시 후(예: 30초 뒤) 다시 시도해주세요.");
+      let data;
+      try {
+        const response = await fetch("/api/gemini/plan", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ idea })
+        });
+        
+        if (response.status === 429) {
+          setCooldownTime(30);
+          throw new Error("AI가 지금 너무 바빠요! 잠시 후(예: 30초 뒤) 다시 시도해주세요.");
+        }
+        
+        const contentType = response.headers.get("content-type");
+        if (!contentType || !contentType.includes("application/json")) {
+          console.warn("Backend API not found or returned HTML. Triggering local fallback.");
+          data = getLocalFallbackPlan(idea);
+        } else {
+          data = await response.json();
+          if (!response.ok) {
+            throw new Error(data.error || data.message || "기획 에이전트 응답 실패");
+          }
+        }
+      } catch (fetchErr: any) {
+        if (fetchErr.message.includes("AI가 지금 너무 바빠요")) throw fetchErr;
+        console.warn("Fetch failed, using local fallback planner:", fetchErr);
+        data = getLocalFallbackPlan(idea);
       }
       
-      const data = await response.json();
-      if (!response.ok) {
-        throw new Error(data.error || data.message || "기획 에이전트로부터 응답을 받지 못했습니다.");
-      }
-
       // Save to Cache
       localStorage.setItem("KION_SPEC_CACHE_" + idea.trim(), JSON.stringify(data));
 
@@ -538,8 +618,13 @@ export default function App() {
       }
 
       if (!response.ok) {
-        const data = await response.json();
-        throw new Error(data.error || data.message || "PM 에이전트로부터 응답을 받지 못했습니다.");
+        let errorData;
+        try {
+          errorData = await response.json();
+        } catch (e) {
+          throw new Error(`서버 오류 (${response.status}): 백엔드 서버 연결을 확인해주세요.`);
+        }
+        throw new Error(errorData.error || errorData.message || "PM 에이전트로부터 응답을 받지 못했습니다.");
       }
 
       const data = await response.json();
@@ -649,6 +734,12 @@ export default function App() {
       if (response.status === 429) {
         setCooldownTime(30);
         throw new Error("AI가 지금 너무 바빠요! 잠시 후(예: 30초 뒤) 다시 시도해주세요.");
+      }
+
+      // Check if response is JSON
+      const contentType = response.headers.get("content-type");
+      if (!contentType || !contentType.includes("application/json")) {
+        throw new Error("서버 응답이 JSON 형식이 아닙니다. (백엔드 서버 연결을 확인해주세요)");
       }
 
       const data = await response.json();
