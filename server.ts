@@ -1374,21 +1374,24 @@ app.post("/api/gemini/code", async (req, res) => {
 1. index.html: 메인 HTML 파일. CDN을 활용해 풍부하고 완성도 높은 UI를 만들어야 해.
    - Tailwind CSS 스크립트 로드 필수: <script src="https://cdn.tailwindcss.com"></script>
    - Lucide Icons CDN 로드 필수: <script src="https://unpkg.com/lucide@latest"></script> 
-   - 스크립트 연결: <script src="script.js" defer></script>
-   - 스타일시트 연결: <link rel="stylesheet" href="styles.css">
+   - 스크립트 연결: <script src="./script.js" defer></script> (반드시 상대 경로로 작성)
+   - 스타일시트 연결: <link rel="stylesheet" href="./styles.css"> (반드시 상대 경로로 작성)
    - 반드시 모던하고 고급스러운 한글 레이아웃, 풍부한 여백, 호버 애니메이션, 반응형 디자인을 적용해줘.
 2. script.js: 모든 애플리케이션 상태 관리(State Management) 및 인터랙션 로직이 담긴 순수 자바스크립트 파일.
    - 데이터는 새로고침해도 유지되도록 localStorage를 적극 활용해야 해.
+   - Supabase 등을 사용할 경우, 환경 변수는 반드시 'import.meta.env.VITE_...' 형식을 사용하되, 실제 배포 시에는 정적 값으로 치환될 수 있도록 작성해.
    - Lucide 아이콘이 렌더링된 후 lucide.createIcons()를 실행하는 코드 포함 필수.
    - 가상의 목 데이터(mock data)를 풍부하게 준비해서 첫 화면이 썰렁하지 않고 바로 풍부한 앱 경험을 할 수 있도록 유도해줘.
 3. styles.css: 추가적인 커스텀 스타일이나 애니메이션 클래스 정의.
 4. _redirects: Netlify SPA 배포를 위한 리다이렉트 설정 파일. 내용물은 반드시 "/* /index.html 200" 한 줄이어야 한다.
 
 중요 사항:
+- 너는 '빌드된 결과물(dist)'을 직접 생성하는 에이전트다. 따라서 index.html에서 /src/main.tsx 같은 소스 경로를 절대 호출하지 말고, 반드시 빌드 완료된 ./script.js 형태만 사용해라.
+- 모든 파일은 배포 루트(dist 폴더의 역할)에 위치하게 되므로, 경로 참조 시 오타나 누락이 없어야 MIME type 에러를 방지할 수 있다.
 - 코드 내의 모든 텍스트, 설명, 가이드는 한글로 친절하고 친근하게 작성해줘.
 - '지저분하거나 작동하지 않는 코드'가 들어있어서는 절대 안 되며, 100% 자가 구동되고 미려해야 한다.
 - 라이브러리는 CDN을 통해 완벽하게 불러와야 해.
-- Netlify 배포용 'dist' 폴더 구조를 준비해야 하므로, 반환되는 파일들은 배포 루트 폴더에 있어야 한다.`;
+- Netlify 배포 시 별도의 빌드 명령 없이도 즉시 작동하도록 '최종 결과물' 상태의 파일을 반환해라.`;
 
       const finalSystemPrompt = `${baseSystemPrompt}\n\n[기획자가 내린 세부 지시사항]:\n${customSystemPrompt || ""}`;
 
@@ -1474,9 +1477,9 @@ app.post("/api/netlify/deploy", async (req, res) => {
     // Build the ZIP in memory
     const zip = new AdmZip();
     for (const file of deployFiles) {
-      // Normalize path to make sure it's at the root of the ZIP
-      const filename = path.basename(file.path);
-      zip.addFile(filename, Buffer.from(file.content, "utf-8"));
+      // Use the full relative path to preserve directory structure (e.g. src/App.tsx)
+      const zipPath = file.path.startsWith("/") ? file.path.slice(1) : file.path;
+      zip.addFile(zipPath, Buffer.from(file.content, "utf-8"));
     }
     const zipBuffer = zip.toBuffer();
 
